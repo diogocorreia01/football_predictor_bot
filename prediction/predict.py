@@ -31,15 +31,46 @@ def prever_jogo(home, away):
 
     return probabilities
 
-if __name__ == '__main__':
-    home = input("Nome da equipa da casa: ")
-    away = input("Nome da equipa visitante: ")
+def prever_lista_de_jogos(lista_de_jogos):
+    print("\n🔮 Previsões para os jogos da próxima jornada:\n")
+    for home, away in lista_de_jogos:
+        try:
+            probabilidades = prever_jogo(home, away)
+            print(f"{home} vs {away}")
+            print(f"🏠 Vitória da casa: {probabilidades[2]*100:.1f}%")
+            print(f"🤝 Empate: {probabilidades[1]*100:.1f}%")
+            print(f"🚗 Vitória visitante: {probabilidades[0]*100:.1f}%\n")
+        except ValueError as e:
+            print(f"Erro com o jogo {home} vs {away}: {e}\n")
 
-    try:
-        previsao = prever_jogo(home, away)
-        print(f"\n🔮 Probabilidades do jogo {home} vs {away}:")
-        print(f"🏠 Vitória da casa ({home}): {round(previsao[2] * 100, 2)}%")
-        print(f"🤝 Empate: {round(previsao[1] * 100, 2)}%")
-        print(f"🚗 Vitória visitante ({away}): {round(previsao[0] * 100, 2)}%")
-    except ValueError as e:
-        print(f"Erro: {e}")
+if __name__ == '__main__':
+    modo = input("Escolher modo (1: jogo individual, 2: próxima jornada): ")
+
+    if modo == '1':
+        home = input("Nome da equipa da casa: ")
+        away = input("Nome da equipa visitante: ")
+
+        try:
+            previsao = prever_jogo(home, away)
+            print(f"\n🔮 Probabilidades do jogo {home} vs {away}:")
+            print(f"🏠 Vitória da casa ({home}): {previsao[2]*100:.1f}%")
+            print(f"🤝 Empate: {previsao[1]*100:.1f}%")
+            print(f"🚗 Vitória visitante ({away}): {previsao[0]*100:.1f}%")
+        except ValueError as e:
+            print(f"Erro: {e}")
+
+    elif modo == '2':
+        jogos_jornada = [
+            ("Arouca", "Famalicao"),
+            ("Guimaraes", "Santa Clara"),
+            ("Gil Vicente", "Moreirense"),
+            ("Nacional", "Estrela"),
+            ("Porto", "Benfica"),
+            ("Farense", "Casa Pia"),
+            ("Rio Ave", "Boavista"),
+            ("Sp Lisbon", "Sp Braga"),
+        ]
+        prever_lista_de_jogos(jogos_jornada)
+
+    else:
+        print("Opção inválida.")
