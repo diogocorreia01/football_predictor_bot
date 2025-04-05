@@ -6,12 +6,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import joblib
 import os
+import glob
 
-# Caminho para o CSV
-DATA_PATH = '../data/liga_portugal_24_25.csv'
+# Caminho para os ficheiros CSV
+csv_files = glob.glob('../data/liga_portugal_*.csv')
 
-# Carregar dados
-df = pd.read_csv(DATA_PATH)
+# Carregar e juntar todos os CSVs
+df_list = [pd.read_csv(file) for file in csv_files]
+df = pd.concat(df_list, ignore_index=True)
+
+print(f"Total de jogos carregados: {len(df)}")
 
 # Converter resultado em número (0 = fora, 1 = empate, 2 = casa)
 result_map = {'A': 0, 'D': 1, 'H': 2}
@@ -46,7 +50,7 @@ for _, row in df.iterrows():
     if home in home_stats.index and away in away_stats.index:
         home_values = home_stats.loc[home].values
         away_values = away_stats.loc[away].values
-        combined = np.concatenate([home_values, away_values])  # Somente as estatísticas essenciais
+        combined = np.concatenate([home_values, away_values, home_values - away_values])
         rows.append((home, away, combined, result))
 
 # Separar features e labels

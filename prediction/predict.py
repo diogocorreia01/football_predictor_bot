@@ -16,14 +16,10 @@ def prever_jogo(home, away):
     if home not in home_stats.index or away not in away_stats.index:
         raise ValueError("Uma das equipas não foi encontrada nas estatísticas.")
 
-    home_values = home_stats.loc[home].values
-    away_values = away_stats.loc[away].values
-
-    # Calcular as diferenças
-    differences = home_values - away_values
-
-    # Combinar valores de casa, visitante e diferenças
-    input_vector = np.concatenate([home_values, away_values, differences])
+    home_values = home_stats.loc[home].values  # ex: 6 valores
+    away_values = away_stats.loc[away].values  # ex: 6 valores
+    differences = home_values - away_values  # 6 valores
+    input_vector = np.concatenate([home_values, away_values, differences])  # total: 18
 
     # Normalizar os dados da mesma forma que foi feito no treino
     scaler = joblib.load('../models/scaler.pkl')
@@ -42,8 +38,8 @@ if __name__ == '__main__':
     try:
         previsao = prever_jogo(home, away)
         print(f"\n🔮 Probabilidades do jogo {home} vs {away}:")
-        print(f"🏠 Vitória da casa ({home}): {previsao['Casa']}%")
-        print(f"🤝 Empate: {previsao['Empate']}%")
-        print(f"🚗 Vitória visitante ({away}): {previsao['Fora']}%")
+        print(f"🏠 Vitória da casa ({home}): {round(previsao[2] * 100, 2)}%")
+        print(f"🤝 Empate: {round(previsao[1] * 100, 2)}%")
+        print(f"🚗 Vitória visitante ({away}): {round(previsao[0] * 100, 2)}%")
     except ValueError as e:
         print(f"Erro: {e}")
